@@ -1,4 +1,6 @@
 import { users, opportunities, userMatches, type User, type InsertUser, type Opportunity, type InsertOpportunity, type UserMatch, type InsertUserMatch } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -17,6 +19,84 @@ export interface IStorage {
   createUserMatch(match: InsertUserMatch): Promise<UserMatch>;
   updateUserMatch(id: number, updates: Partial<InsertUserMatch>): Promise<UserMatch | undefined>;
   deleteUserMatch(id: number): Promise<boolean>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...insertUser,
+        updatedAt: new Date(),
+      })
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async getAllOpportunities(): Promise<Opportunity[]> {
+    return await db.select().from(opportunities);
+  }
+
+  async getOpportunityById(id: number): Promise<Opportunity | undefined> {
+    const [opportunity] = await db.select().from(opportunities).where(eq(opportunities.id, id));
+    return opportunity || undefined;
+  }
+
+  async createOpportunity(insertOpportunity: InsertOpportunity): Promise<Opportunity> {
+    const [opportunity] = await db
+      .insert(opportunities)
+      .values(insertOpportunity)
+      .returning();
+    return opportunity;
+  }
+
+  async getUserMatches(userId: number): Promise<UserMatch[]> {
+    return await db.select().from(userMatches).where(eq(userMatches.userId, userId));
+  }
+
+  async createUserMatch(insertMatch: InsertUserMatch): Promise<UserMatch> {
+    const [match] = await db
+      .insert(userMatches)
+      .values(insertMatch)
+      .returning();
+    return match;
+  }
+
+  async updateUserMatch(id: number, updates: Partial<InsertUserMatch>): Promise<UserMatch | undefined> {
+    const [match] = await db
+      .update(userMatches)
+      .set(updates)
+      .where(eq(userMatches.id, id))
+      .returning();
+    return match || undefined;
+  }
+
+  async deleteUserMatch(id: number): Promise<boolean> {
+    const result = await db.delete(userMatches).where(eq(userMatches.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -150,9 +230,16 @@ export class MemStorage implements IStorage {
       ...insertUser, 
       id, 
       createdAt: new Date(),
+      updatedAt: new Date(),
       skills: insertUser.skills || [],
       interests: insertUser.interests || [],
       goals: insertUser.goals || [],
+      country: insertUser.country || null,
+      education: insertUser.education || null,
+      cvText: insertUser.cvText || null,
+      isEmailVerified: insertUser.isEmailVerified || false,
+      resetToken: insertUser.resetToken || null,
+      resetTokenExpiry: insertUser.resetTokenExpiry || null,
     };
     this.users.set(id, user);
     return user;
@@ -182,6 +269,12 @@ export class MemStorage implements IStorage {
       id,
       requirements: insertOpportunity.requirements || [],
       tags: insertOpportunity.tags || [],
+      duration: insertOpportunity.duration || null,
+      salary: insertOpportunity.salary || null,
+      deadline: insertOpportunity.deadline || null,
+      status: insertOpportunity.status || "open",
+      url: insertOpportunity.url || null,
+      isRemote: insertOpportunity.isRemote || false,
     };
     this.opportunities.set(id, opportunity);
     return opportunity;
@@ -198,6 +291,9 @@ export class MemStorage implements IStorage {
       id, 
       createdAt: new Date(),
       reasons: insertMatch.reasons || [],
+      userId: insertMatch.userId || null,
+      opportunityId: insertMatch.opportunityId || null,
+      isSaved: insertMatch.isSaved || false,
     };
     this.userMatches.set(id, match);
     return match;
@@ -217,4 +313,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
