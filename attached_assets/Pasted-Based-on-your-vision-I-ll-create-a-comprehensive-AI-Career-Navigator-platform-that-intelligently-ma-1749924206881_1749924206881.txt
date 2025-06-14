@@ -1,0 +1,53 @@
+Based on your vision, I'll create a comprehensive AI Career Navigator platform that intelligently matches users with internships, study abroad programs, and career opportunities. This will be a production-ready MVP with sophisticated AI-powered matching and a polished user experience.
+
+Core Features:
+
+CV upload with drag-and-drop functionality and intelligent parsing
+Interactive questionnaire for users without CVs ready
+AI-powered opportunity matching based on skills, interests, and goals
+Curated database of internships, study abroad programs, and grants
+Calendar integration with deadline tracking and .ics export
+Personalized dashboard with saved opportunities and application progress
+Advanced filtering and search capabilities
+Email reminder system for upcoming deadlines
+Design Elements:
+
+Modern gradient-based design with deep blues (#1e40af), vibrant teals (#0891b2), and accent oranges (#ea580c)
+Smooth micro-interactions and hover states throughout the interface
+Clean typography with proper hierarchy and 150% line spacing for readability
+Card-based layout with subtle shadows and rounded corners for opportunity listings
+Responsive design optimized for mobile (<768px), tablet (768-1024px), and desktop (>1024px)
+Progressive disclosure pattern with collapsible sections and modal overlays
+Consistent 8px spacing system and visual balance across all components
+AI Career Navigator Platform
+
+package.json
+index.html
+src/types/index.ts
+src/data/opportunities.ts
+src/components/Header.tsx
+src/components/CVUpload.tsx
+src/components/Questionnaire.tsx
+src/components/OpportunityCard.tsx
+src/components/Dashboard.tsx
+src/App.tsx
+npm run dev
+I've created a comprehensive AI Career Navigator platform that intelligently matches users with career opportunities. The application features a sophisticated interface with CV upload capabilities, an interactive questionnaire system, and a personalized dashboard showcasing curated internships, study abroad programs, grants, and fellowships. The platform includes advanced filtering, calendar integration for deadline tracking, and a beautiful gradient-based design with smooth micro-interactions throughout the user journey.
+
+I'm importing your project into Bolt. This may take a moment as I set everything up. Once it's ready, you'll be able to explore and interact with your code.
+
+Importing Bolt Project
+
+sb1-s8ekjc4h
+npm install
+npm run dev
+I've successfully imported your project. I'm ready to assist you with analyzing and improving your code.
+
+96K daily tokens remaining.
+Subscribe to Pro for 66x more usage
+
+Clear
+Update
+
+
+

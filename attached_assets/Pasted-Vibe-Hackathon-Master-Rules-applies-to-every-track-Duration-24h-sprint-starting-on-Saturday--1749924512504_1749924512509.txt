@@ -1,0 +1,91 @@
+Vibe Hackathon · Master Rules (applies to every track)
+Duration
+
+
+24h sprint, starting on Saturday, June 14, 18:00 (GMT+6)
+
+Teams
+
+
+Solo or teams up to 4 people.
+The same people can’t be in more than 1 team
+
+Eligibility
+
+
+Anyone. No geo or age restriction
+
+Idea
+
+
+Your idea should be brand new, you should not have worked on it before
+
+Prohibited Content
+
+
+No NSFW, gambling, hate, extremist, or copyrighted assets you don’t own.
+
+Ownership
+
+
+You own what you build; you grant Vibe Hackathon the right to showcase it in recap posts or other media.
+
+Conduct
+
+
+Be kind, respect others, and no trolling.
+
+
+Submission Requirements
+
+All submissions must include:
+
+Working demo link (must be publicly accessible)
+Video demo (2-3 minutes max, showing your project in action)
+Short description of the project
+Social media post of your demo, tag us on instagram (@thebuildx) and College Portal  
+Video Demonstration (Max 3 minutes): A short video that:
+
+Introduce your team.
+Explains the problem or concept.
+Demonstrates your project's features and functionality.
+Explains what makes your project unique.
+
+AI Track
+
+Objective
+
+Push the boundaries of what's possible with Artificial Intelligence. Your focus should be on creativity, novelty, and technical innovation, not necessarily market-readiness.
+
+Tool Freedom: You have complete freedom to use any AI models, APIs, or tools you wish (e.g., OpenAI, Gemini, Midjourney, Stable Diffusion, custom models).
+
+Creativity is Key: We welcome both artistic/creative applications and novel productivity/utility tools. The goal is to surprise us!
+
+Project Ideas (for inspiration):
+
+An AI tool that generates personalized bedtime stories from user prompts (e.g., "a story about a brave knight and a friendly dragon").
+An interactive art piece that uses an image model to change its visuals based on real-time news headlines.
+A productivity tool that listens to your meeting transcript and automatically generates
+
+Documentation Requirements
+
+Include an "AI Usage Log" documenting:
+Which AI tools you used
+How you used them in your creative process
+What percentage of your project involved AI assistance
+This can be a simple text file or section in your README
+Judging Criteria
+Creativity & Originality (35%) - How unique and imaginative is your approach?
+Execution Quality (35%) - How well does your final product work?
+AI Integration (30%) - How effectively did you leverage AI tools?
+
+
+
+AI Documentation: Include a log in the README detailing:
+
+AI tools used.
+What they generated (e.g., code, models, outputs).
+How they were integrated into the project.
+
+
+If you have questions, please email us at admin@thebuildx.co
