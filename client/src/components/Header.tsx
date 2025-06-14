@@ -6,12 +6,34 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
   const [location, setLocation] = useLocation();
+  const { isAuthenticated, user } = useAuth();
+  const logout = useLogout();
+  const { toast } = useToast();
 
-  const navItems = [
-    { id: "upload", label: "Upload CV", icon: Upload, path: "/upload" },
-    { id: "questionnaire", label: "Questionnaire", icon: ClipboardList, path: "/questionnaire" },
-    { id: "dashboard", label: "Dashboard", icon: BarChart3, path: "/dashboard" },
-  ];
+  const handleLogout = async () => {
+    try {
+      await logout.mutateAsync();
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
+      setLocation("/");
+    } catch (error) {
+      toast({
+        title: "Logout Failed",
+        description: "There was an error logging out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const navItems = isAuthenticated 
+    ? [
+        { id: "dashboard", label: "Dashboard", icon: BarChart3, path: "/dashboard" },
+      ]
+    : [
+        { id: "home", label: "Home", icon: Upload, path: "/" },
+      ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-white/20">
@@ -44,10 +66,40 @@ export default function Header() {
               </Button>
             ))}
             
-            <Button className="ai-gradient hover:scale-105 transition-all duration-300 ai-glow">
-              <Calendar className="w-4 h-4 mr-2" />
-              My Calendar
-            </Button>
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-300">
+                  Welcome, {user?.name || user?.email}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  disabled={logout.isPending}
+                  className="text-gray-300 hover:text-white hover:bg-white/10"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  {logout.isPending ? "Logging out..." : "Logout"}
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => setLocation("/auth")}
+                  className="flex items-center space-x-2 hover:bg-white/10 transition-all duration-300"
+                >
+                  <LogIn className="w-4 h-4" />
+                  <span>Sign In</span>
+                </Button>
+                <Button 
+                  className="ai-gradient hover:scale-105 transition-all duration-300 ai-glow"
+                  onClick={() => setLocation("/auth")}
+                >
+                  Get Started
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

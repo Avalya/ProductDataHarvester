@@ -149,6 +149,177 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to get user data" });
     }
   });
+
+  // Seed database with sample opportunities
+  app.post("/api/seed-opportunities", async (req, res) => {
+    try {
+      const sampleOpportunities = [
+        {
+          title: "Google Summer of Code - Software Engineering Internship",
+          organization: "Google",
+          type: "Internship",
+          location: "Mountain View, CA",
+          duration: "12 weeks",
+          salary: "$7,500/month",
+          deadline: "2025-03-15",
+          status: "Open",
+          description: "Work on real-world open source projects with Google mentors. Develop software solutions that impact millions of users worldwide.",
+          requirements: ["Computer Science or related field", "Proficiency in Python, Java, or C++", "Open source contributions", "Strong problem-solving skills"],
+          tags: ["Software Engineering", "Open Source", "Programming", "Tech"],
+          url: "https://summerofcode.withgoogle.com/",
+          isRemote: false
+        },
+        {
+          title: "Microsoft Azure Cloud Engineering Fellowship",
+          organization: "Microsoft",
+          type: "Fellowship",
+          location: "Seattle, WA",
+          duration: "6 months",
+          salary: "$8,000/month",
+          deadline: "2025-02-28",
+          status: "Open",
+          description: "Build next-generation cloud infrastructure and services on Microsoft Azure platform. Work with cutting-edge technologies in distributed systems.",
+          requirements: ["Bachelor's in Computer Science", "Cloud computing knowledge", "Azure certifications preferred", "Distributed systems experience"],
+          tags: ["Cloud Computing", "Azure", "Infrastructure", "Distributed Systems"],
+          url: "https://careers.microsoft.com/",
+          isRemote: true
+        },
+        {
+          title: "United Nations Global Youth Leadership Program",
+          organization: "United Nations",
+          type: "Fellowship",
+          location: "New York, NY",
+          duration: "12 months",
+          salary: "$4,500/month",
+          deadline: "2025-04-01",
+          status: "Open",
+          description: "Lead global initiatives for sustainable development and peace. Work directly with UN officials on international policy and humanitarian projects.",
+          requirements: ["Master's degree in International Relations, Political Science, or related field", "Multilingual capabilities", "International experience", "Leadership experience"],
+          tags: ["International Relations", "Policy", "Leadership", "Humanitarian"],
+          url: "https://careers.un.org/",
+          isRemote: false
+        },
+        {
+          title: "Rhodes Scholarship - Oxford University",
+          organization: "Rhodes Trust",
+          type: "Scholarship",
+          location: "Oxford, UK",
+          duration: "2-3 years",
+          salary: "Full funding + stipend",
+          deadline: "2025-07-01",
+          status: "Open",
+          description: "The world's oldest international scholarship program. Study at Oxford University with full funding and join a network of global leaders.",
+          requirements: ["Exceptional academic achievement", "Leadership potential", "Commitment to service", "Age 18-24"],
+          tags: ["Education", "Leadership", "Oxford", "Academic Excellence"],
+          url: "https://www.rhodeshouse.ox.ac.uk/",
+          isRemote: false
+        },
+        {
+          title: "SpaceX Starship Engineering Internship",
+          organization: "SpaceX",
+          type: "Internship",
+          location: "Hawthorne, CA",
+          duration: "16 weeks",
+          salary: "$9,000/month",
+          deadline: "2025-01-31",
+          status: "Open",
+          description: "Design and build the next generation of spacecraft. Work on Starship development with world-class engineers pushing the boundaries of space exploration.",
+          requirements: ["Aerospace, Mechanical, or Electrical Engineering", "CAD software proficiency", "Strong analytical skills", "Passion for space exploration"],
+          tags: ["Aerospace", "Engineering", "Space", "Innovation"],
+          url: "https://www.spacex.com/careers/",
+          isRemote: false
+        },
+        {
+          title: "McKinsey & Company Business Analyst Program",
+          organization: "McKinsey & Company",
+          type: "Internship",
+          location: "Various Global Offices",
+          duration: "10 weeks",
+          salary: "$6,500/week",
+          deadline: "2025-02-15",
+          status: "Open",
+          description: "Solve complex business problems for Fortune 500 companies. Gain exposure to multiple industries and develop strategic consulting skills.",
+          requirements: ["Top-tier university degree", "Strong analytical and quantitative skills", "Leadership experience", "Excellent communication skills"],
+          tags: ["Consulting", "Strategy", "Business", "Analytics"],
+          url: "https://www.mckinsey.com/careers/",
+          isRemote: false
+        },
+        {
+          title: "Fulbright Research Grant - Global Health",
+          organization: "Fulbright Program",
+          type: "Grant",
+          location: "Various Countries",
+          duration: "12 months",
+          salary: "$2,000-4,000/month",
+          deadline: "2025-05-15",
+          status: "Open",
+          description: "Conduct independent research on global health challenges in developing countries. Collaborate with local institutions and contribute to public health solutions.",
+          requirements: ["Graduate degree in Public Health, Medicine, or related field", "Research experience", "Cultural adaptability", "Language skills preferred"],
+          tags: ["Global Health", "Research", "International", "Public Health"],
+          url: "https://fulbrightprogram.org/",
+          isRemote: false
+        },
+        {
+          title: "Goldman Sachs Technology Analyst Program",
+          organization: "Goldman Sachs",
+          type: "Internship",
+          location: "New York, NY",
+          duration: "10 weeks",
+          salary: "$8,500/month",
+          deadline: "2025-01-15",
+          status: "Open",
+          description: "Build cutting-edge financial technology systems. Work on high-frequency trading platforms, risk management systems, and client-facing applications.",
+          requirements: ["Computer Science or Engineering degree", "Strong programming skills in Java/C++/Python", "Interest in financial markets", "Quantitative background"],
+          tags: ["FinTech", "Programming", "Finance", "Quantitative"],
+          url: "https://www.goldmansachs.com/careers/",
+          isRemote: false
+        },
+        {
+          title: "CERN Particle Physics Research Fellowship",
+          organization: "CERN",
+          type: "Fellowship",
+          location: "Geneva, Switzerland",
+          duration: "24 months",
+          salary: "CHF 5,000/month",
+          deadline: "2025-03-31",
+          status: "Open",
+          description: "Conduct groundbreaking research in particle physics using the Large Hadron Collider. Contribute to fundamental discoveries about the universe.",
+          requirements: ["PhD in Physics or related field", "Experience with particle physics", "Programming skills (C++, Python)", "Strong mathematical background"],
+          tags: ["Physics", "Research", "CERN", "Particle Physics"],
+          url: "https://careers.cern/",
+          isRemote: false
+        },
+        {
+          title: "Tesla Autopilot AI Engineering Internship",
+          organization: "Tesla",
+          type: "Internship",
+          location: "Palo Alto, CA",
+          duration: "12 weeks",
+          salary: "$8,000/month",
+          deadline: "2025-02-01",
+          status: "Open",
+          description: "Develop autonomous driving technology using deep learning and computer vision. Work on neural networks that power Tesla's Full Self-Driving capability.",
+          requirements: ["Machine Learning or Computer Vision background", "Python and PyTorch experience", "Strong mathematics skills", "Autonomous systems interest"],
+          tags: ["AI", "Machine Learning", "Autonomous Driving", "Computer Vision"],
+          url: "https://www.tesla.com/careers/",
+          isRemote: false
+        }
+      ];
+
+      // Insert opportunities into database
+      for (const opportunityData of sampleOpportunities) {
+        await storage.createOpportunity(opportunityData);
+      }
+
+      res.json({ 
+        message: "Sample opportunities seeded successfully", 
+        count: sampleOpportunities.length 
+      });
+    } catch (error) {
+      console.error("Seed opportunities error:", error);
+      res.status(500).json({ message: "Failed to seed opportunities" });
+    }
+  });
   
   // AI CV Analysis endpoint
   app.post("/api/analyze-cv", async (req, res) => {
