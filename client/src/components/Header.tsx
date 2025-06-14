@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
-import { Rocket, Upload, ClipboardList, BarChart3, Calendar } from "lucide-react";
+import { Rocket, Upload, ClipboardList, BarChart3, Calendar, LogOut, LogIn } from "lucide-react";
+import { useAuth, useLogout } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Header() {
   const [location, setLocation] = useLocation();

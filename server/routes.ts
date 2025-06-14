@@ -1,14 +1,154 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import bcrypt from "bcryptjs";
 import { storage } from "./storage";
-import { insertUserSchema, insertOpportunitySchema, insertUserMatchSchema } from "@shared/schema";
+import { insertUserSchema, insertOpportunitySchema, insertUserMatchSchema, registerUserSchema, loginUserSchema } from "@shared/schema";
 import OpenAI from "openai";
 
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY || "demo-key"
 });
 
+// Session configuration
+function getSession() {
+  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+    ttl: sessionTtl,
+    tableName: "sessions",
+  });
+  
+  return session({
+    secret: process.env.SESSION_SECRET || "ai-career-navigator-secret-key-change-in-production",
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: sessionTtl,
+    },
+  });
+}
+
+// Authentication middleware
+function requireAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.session?.userId) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  next();
+}
+
+// Extend session type
+declare module "express-session" {
+  interface SessionData {
+    userId: number;
+    userEmail: string;
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup session middleware
+  app.use(getSession());
+  
+  // Registration endpoint
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const userData = registerUserSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(userData.email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists with this email" });
+      }
+      
+      // Hash password
+      const passwordHash = await bcrypt.hash(userData.password, 12);
+      
+      // Create user
+      const user = await storage.createUser({
+        email: userData.email,
+        name: userData.name,
+        country: userData.country,
+        passwordHash,
+        skills: [],
+        interests: [],
+        goals: [],
+      });
+      
+      // Set session
+      req.session.userId = user.id;
+      req.session.userEmail = user.email;
+      
+      // Return user without password
+      const { passwordHash: _, ...userResponse } = user;
+      res.json({ user: userResponse, message: "Registration successful" });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(400).json({ message: "Registration failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+  
+  // Login endpoint
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const loginData = loginUserSchema.parse(req.body);
+      
+      // Find user
+      const user = await storage.getUserByEmail(loginData.email);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      
+      // Verify password
+      const isPasswordValid = await bcrypt.compare(loginData.password, user.passwordHash);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      
+      // Set session
+      req.session.userId = user.id;
+      req.session.userEmail = user.email;
+      
+      // Return user without password
+      const { passwordHash: _, ...userResponse } = user;
+      res.json({ user: userResponse, message: "Login successful" });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(400).json({ message: "Login failed", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+  
+  // Logout endpoint
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Could not log out" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: "Logout successful" });
+    });
+  });
+  
+  // Get current user endpoint
+  app.get("/api/auth/user", requireAuth, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId!);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const { passwordHash: _, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Get user error:", error);
+      res.status(500).json({ message: "Failed to get user data" });
+    }
+  });
   
   // AI CV Analysis endpoint
   app.post("/api/analyze-cv", async (req, res) => {
